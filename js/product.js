@@ -115,6 +115,7 @@ Pour consulter votre panier, cliquez sur OK`)){
             localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
             console.table(produitLocalStorage);
             showupConfirmation();
+
         /* Si le produit commandé n'est pas dans le panier */
         } else {
             produitLocalStorage.push(optionsProduit);
@@ -122,6 +123,7 @@ Pour consulter votre panier, cliquez sur OK`)){
             console.table(produitLocalStorage);
             showupConfirmation();
         }
+        
     /* Si le panier est vide */
     } else {
         produitLocalStorage =[];
