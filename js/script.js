@@ -41,4 +41,3 @@ let productData =[];
   .catch (function(error){
       return error;
   });
-

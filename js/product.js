@@ -1,25 +1,22 @@
-/* Faire le lien entre un produit de la page
-d’accueil et la page Produit */
-
-var str = window.location.href;
-var url = new URL(str);
+var string = window.location.href;
+var url = new URL(string);
 var idProduct = url.searchParams.get("id");
 console.log(idProduct);
-let product = "";
+let article = "";
 
-const colorPicked = document.querySelector('#color');
-const selectedQuantity = document.getElementById("quantity");
+const colorPicked = document. querySelector("#colors");
+const quantityPicked = document.querySelector("#quantity");
 
-getProduct();
+getArticle();
 
-/* Récupèrer les produits de l'API */
-
-function getProduct() {
+/* Récupérer les articles de l'API */
+function getArticle() {
     fetch("http://localhost:3000/api/products/" + idProduct)
     .then((res) => {
         return res.json();
     })
 
+    /* Répartir les données de l'API dans le DOM */
     .then(async function (productData) {
         article = await productData;
         console.table(article);
@@ -28,12 +25,12 @@ function getProduct() {
         }
     })
     .catch((error) => {
-        console.log("Erreur");
+        console.log("Erreur de la requête API");
     })
 }
     
 function getPost(article){
-    /* Inserer l'image */
+   /* Insérer l'image */
     let productImg = document.createElement("img");
     document.querySelector(".item__img").appendChild(productImg);
     productImg.src = article.imageUrl;
@@ -43,15 +40,15 @@ function getPost(article){
     let productName = document.getElementById('title');
     productName.innerHTML = article.name;
 
-    /* Modifier prix */
+    /* Modifier le prix */
     let productPrice = document.getElementById('price');
     productPrice.innerHTML = article.price;
 
-    /* Modifier de la description */
+    /* Modifier la description */
     let productDescription = document.getElementById('description');
     productDescription.innerHTML = article.description;
 
-    /* Inserer des options de couleurs */
+    /* Insérer les options de couleurs */
     for (let colors of article.colors){
         console.table(colors);
         let productColors = document.createElement("option");
@@ -62,22 +59,21 @@ function getPost(article){
     addToCart(article);
 }
 
-/* Gerer le panier */
+/* Gestion du panier */
 function addToCart(article) {
-    const btn_envoyerPanier = document.querySelector('#addToCart');
+    const btn_envoyerPanier = document.querySelector("#addToCart");
 
     /* Ecouter le panier avec 2 conditions couleur non nulle et quantité entre 1 et 100 */
-
     btn_envoyerPanier.addEventListener("click", (event)=>{
-        if (selectedQuantity.value > 0 && selectedQuantity.value <=100 && selectedQuantity.value != 0){
+        if (quantityPicked.value > 0 && quantityPicked.value <=100 && quantityPicked.value != 0){
 
-    /* Recupèrer le choix de la couleur */
+    /* Récupérer le choix de la couleur */
     let choixCouleur = colorPicked.value;
                 
-    /* Recupèrer le choix de la quantité */
-    let choixQuantite = selectedQuantity.value;
+    /* Récupérer le choix de la quantité */
+    let choixQuantite = quantityPicked.value;
 
-    /* Recupèrer les options du produit à ajouter au panier */
+    /* Récupérer les options de l'article à ajouter au panier */
     let optionsProduit = {
         idProduit: idProduct,
         couleurProduit: choixCouleur,
@@ -89,13 +85,12 @@ function addToCart(article) {
         altImgProduit: article.altTxt
     };
 
-    /* Initialer le local storage */
-    // Déclarer la variable "produit"
-    let produitRegisteredLocalStorage = JSON.parse(localStorage.getItem("produit"));
+    /* Initialisation du local storage */
+    let productLocalStorage = JSON.parse(localStorage.getItem("produit"));
 
-    /* Fenêtre apparaitre */
-    const showupConfirmation =() =>{
-        if(window.confirm( `${choixQuantite} ${article.name} ${choixCouleur} est ajoutée au panier
+    /* Fenêtre pop-up */
+    const popupConfirmation =() =>{
+        if(window.confirm(`Votre commande de ${choixQuantite} ${article.name} ${choixCouleur} est ajoutée au panier
 Pour consulter votre panier, cliquez sur OK`)){
             window.location.href ="cart.html";
         }
@@ -103,36 +98,31 @@ Pour consulter votre panier, cliquez sur OK`)){
 
     /* Importation dans le local storage */
     /* Si le panier comporte déjà au moins 1 article */
-    
-    if (produitRegisteredLocalStorage) {
-    const findResult = produitRegisteredLocalStorage.find(
+    if (productLocalStorage) {
+    const resultFind = productLocalStorage.find(
         (el) => el.idProduit === idProduct && el.couleurProduit === choixCouleur);
-
         /* Si le produit commandé est déjà dans le panier */
-        if (findResult) {
+        if (resultFind) {
             let newQuantite =
-            parseInt(optionsProduit.quantiteProduit) + parseInt(findResult.quantiteProduit);
-            findResult.quantiteProduit = newQuantite;
-            localStorage.setItem("produit", JSON.stringify(produitRegisteredLocalStorage));
-            console.table(produitRegisteredLocalStorage);
-            showupConfirmation();
-
+            parseInt(optionsProduit.quantiteProduit) + parseInt(resultFind.quantiteProduit);
+            resultFind.quantiteProduit = newQuantite;
+            localStorage.setItem("produit", JSON.stringify(productLocalStorage));
+            console.table(productLocalStorage);
+            popupConfirmation();
         /* Si le produit commandé n'est pas dans le panier */
         } else {
-            produitRegisteredLocalStorage.push(optionsProduit);
-            localStorage.setItem("produit", JSON.stringify(produitRegisteredLocalStorage));
-            console.table(produitRegisteredLocalStorage);
-            showupConfirmation();
+            productLocalStorage.push(optionsProduit);
+            localStorage.setItem("produit", JSON.stringify(productLocalStorage));
+            console.table(productLocalStorage);
+            popupConfirmation();
         }
-        
     /* Si le panier est vide */
     } else {
-        produitRegisteredLocalStorage =[];
-        produitRegisteredLocalStorage.push(optionsProduit);
-        localStorage.setItem("produit", JSON.stringify(produitRegisteredLocalStorage));
-        console.table(produitRegisteredLocalStorage);
-        showupConfirmation();
+        productLocalStorage =[];
+        productLocalStorage.push(optionsProduit);
+        localStorage.setItem("produit", JSON.stringify(productLocalStorage));
+        console.table(productLocalStorage);
+        popupConfirmation();
     }}
     });
 }
-		
