@@ -79,20 +79,23 @@ function addToCart(article) {
         couleurProduit: choixCouleur,
         quantiteProduit: Number(choixQuantite),
         nomProduit: article.name,
-        prixProduit: article.price,
+        prixProduit: "",
         descriptionProduit: article.description,
         imgProduit: article.imageUrl,
         altImgProduit: article.altTxt
     };
 
-    /* Initialisation du local storage */
+    /* Initialisation du local storage */ 
     let productLocalStorage = JSON.parse(localStorage.getItem("produit"));
+    // JSON.parse permet de convertir les données au format JSON qui sont dans le local storage en objet Javascript
 
     /* Fenêtre pop-up */
     const popupConfirmation =() =>{
         if(window.confirm(`Votre commande de ${choixQuantite} ${article.name} ${choixCouleur} est ajoutée au panier
 Pour consulter votre panier, cliquez sur OK`)){
             window.location.href ="cart.html";
+}else{
+    window.location.href ="index.html";
         }
     }
 

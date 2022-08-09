@@ -1,9 +1,10 @@
 
-function main(){
-    const idNode = document.getElementById("orderId");
-    idNode.innerText = localStorage.getItem("orderId");
-    console.log(localStorage.getItem("orderId"))
-    localStorage.clear();
-}
+// Récupérer l'Id de la commande provenant de l'url
+var string = window.location.href;
+var url = new URL(string);
+var idProduct = url.searchParams.get("order");
 
-main();
+document.querySelector("#orderId").innerHTML = `${idProduct}`;
+
+
+
